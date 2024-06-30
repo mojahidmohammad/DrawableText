@@ -11,7 +11,10 @@ enum FontManager { cairo, cairoBold, cairoSemiBold }
 
 extension HtmlHelper on String {
   bool get isHTML {
-    if (contains('<div>') || contains('<p>') || contains('<h') || contains('</')) {
+    if (contains('<div>') ||
+        contains('<p>') ||
+        contains('<h') ||
+        contains('</')) {
       return true;
     }
     return false;
@@ -34,9 +37,9 @@ class DrawableText extends StatelessWidget {
     this.size,
     this.fontFamily,
     this.color,
-    this.textAlign = TextAlign.start,
-    this.maxLines = 100,
-    this.underLine = false,
+    this.textAlign,
+    this.maxLines,
+    this.textDecoration,
     this.selectable,
     this.matchParent,
     this.padding,
@@ -46,23 +49,23 @@ class DrawableText extends StatelessWidget {
     this.maxLength,
     this.fontWeight,
     this.style,
-    this.drawableAlin = DrawableAlin.between,
+    this.drawableAlin,
   }) : super(key: key);
 
   final String text;
   final double? size;
   final String? fontFamily;
   final Color? color;
-  final TextAlign textAlign;
-  final int maxLines;
+  final TextAlign? textAlign;
+  final int? maxLines;
   final int? maxLength;
-  final bool underLine;
+  final TextDecoration? textDecoration;
   final bool? matchParent;
   final EdgeInsets? padding;
   final Widget? drawableStart;
   final Widget? drawableEnd;
   final double? drawablePadding;
-  final DrawableAlin drawableAlin;
+  final DrawableAlin? drawableAlin;
   final bool? selectable;
   final FontWeight? fontWeight;
   final TextStyle? style;
@@ -85,52 +88,43 @@ class DrawableText extends StatelessWidget {
     _initialFont = initialFont;
   }
 
-  factory DrawableText.header({required String text}) {
-    return DrawableText(
-      text: text,
-      fontFamily: FontManager.cairoBold.name,
-      color: _initialColor,
-      size: _headerSize,
-    );
-  }
-
   factory DrawableText.title({
     required String text,
     double? size,
+    String? fontFamily,
     Color? color,
+    TextAlign? textAlign,
+    int? maxLines,
+    int? maxLength,
+    TextDecoration? textDecoration,
     bool? matchParent,
     EdgeInsets? padding,
-  }) {
-    return DrawableText(
-      text: text,
-      fontFamily: FontManager.cairoBold.name,
-      color: color ?? _initialColor,
-      size: size ?? _titleSize,
-      maxLines: 1,
-      textAlign: TextAlign.center,
-      matchParent: matchParent,
-      padding: padding,
-    );
-  }
-
-  factory DrawableText.titleList({
-    required String text,
-    EdgeInsets? padding,
-    Color? color,
     Widget? drawableStart,
     Widget? drawableEnd,
+    double? drawablePadding,
+    DrawableAlin? drawableAlin,
+    bool? selectable,
+    FontWeight? fontWeight,
+    TextStyle? style,
   }) {
     return DrawableText(
       text: text,
-      fontFamily: FontManager.cairoBold.name,
-      color: color ?? _initialColor,
-      size: _titleSize,
-      maxLines: 1,
-      matchParent: true,
-      textAlign: TextAlign.start,
+      size: size,
+      fontFamily: fontFamily ?? FontManager.cairoBold.name,
+      color: color,
+      textAlign: textAlign ?? TextAlign.start,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      textDecoration: textDecoration,
+      matchParent: matchParent,
       padding: padding,
       drawableStart: drawableStart,
       drawableEnd: drawableEnd,
+      drawablePadding: drawablePadding,
+      drawableAlin: drawableAlin,
+      selectable: selectable,
+      fontWeight: fontWeight ?? FontWeight.bold,
+      style: style,
     );
   }
 
@@ -144,7 +138,7 @@ class DrawableText extends StatelessWidget {
         TextStyle(
           color: color ?? _initialColor,
           fontSize: size ?? _initialSize,
-          decoration: underLine ? TextDecoration.underline : null,
+          decoration: textDecoration,
           fontFamily: fontFamily ?? _initialFont,
           fontWeight: fontWeight,
           fontFeatures: const [FontFeature.proportionalFigures()],
@@ -204,7 +198,8 @@ class DrawableText extends StatelessWidget {
     Widget finalWidget = Padding(
       padding: padding ?? EdgeInsets.zero,
       child: SizedBox(
-        width: (matchParent ?? false) ? MediaQuery.of(context).size.width : null,
+        width:
+            (matchParent ?? false) ? MediaQuery.of(context).size.width : null,
         child: text.isHTML ? HtmlWidget(text) : child,
       ),
     );
