@@ -116,7 +116,7 @@ class DrawableText extends StatelessWidget {
       maxLines: maxLines,
       maxLength: maxLength,
       textDecoration: textDecoration,
-      matchParent: matchParent,
+      matchParent: matchParent??true,
       padding: padding,
       drawableStart: drawableStart,
       drawableEnd: drawableEnd,
