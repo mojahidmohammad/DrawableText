@@ -7,28 +7,21 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 
 enum DrawableAlin { withText, between }
 
-enum FontManager { cairo, cairoBold, cairoSemiBold }
-
 extension HtmlHelper on String {
   bool get isHTML {
-    if (contains('<div>') ||
-        contains('<p>') ||
-        contains('<h') ||
-        contains('</')) {
+    if (contains('<div>') || contains('<p>') || contains('<h') || contains('</')) {
       return true;
     }
     return false;
   }
 }
 
-double _headerSize = 20;
-double _titleSize = 18;
 double _initialSize = 18;
 double _initialHeight = 1.8;
 Color _initialColor = Colors.black;
 
 bool _selectable = false;
-String _initialFont = FontManager.cairoSemiBold.name;
+String _initialFont = '';
 
 class DrawableText extends StatelessWidget {
   const DrawableText({
@@ -49,7 +42,7 @@ class DrawableText extends StatelessWidget {
     this.maxLength,
     this.fontWeight,
     this.style,
-    this.drawableAlin,
+    this.drawableAlin = DrawableAlin.between,
   }) : super(key: key);
 
   final String text;
@@ -65,22 +58,18 @@ class DrawableText extends StatelessWidget {
   final Widget? drawableStart;
   final Widget? drawableEnd;
   final double? drawablePadding;
-  final DrawableAlin? drawableAlin;
+  final DrawableAlin drawableAlin;
   final bool? selectable;
   final FontWeight? fontWeight;
   final TextStyle? style;
 
   static initial({
-    double headerSizeText = 20,
-    double titleSizeText = 18,
     double initialHeightText = 1.8,
     double initialSize = 20,
     Color initialColor = Colors.black,
     bool selectable = false,
     String initialFont = 'cairoSemiBold',
   }) {
-    _headerSize = headerSizeText;
-    _titleSize = titleSizeText;
     _initialSize = initialSize;
     _initialHeight = initialHeightText;
     _initialColor = initialColor;
@@ -110,18 +99,18 @@ class DrawableText extends StatelessWidget {
     return DrawableText(
       text: text,
       size: size,
-      fontFamily: fontFamily ?? FontManager.cairoBold.name,
+      fontFamily: fontFamily,
       color: color,
       textAlign: textAlign ?? TextAlign.start,
       maxLines: maxLines,
       maxLength: maxLength,
       textDecoration: textDecoration,
-      matchParent: matchParent??true,
+      matchParent: matchParent ?? true,
       padding: padding,
       drawableStart: drawableStart,
       drawableEnd: drawableEnd,
       drawablePadding: drawablePadding,
-      drawableAlin: drawableAlin,
+      drawableAlin: drawableAlin ?? DrawableAlin.between,
       selectable: selectable,
       fontWeight: fontWeight ?? FontWeight.bold,
       style: style,
@@ -148,7 +137,7 @@ class DrawableText extends StatelessWidget {
     late Widget textWidget = Text(
       text,
       textAlign: textAlign,
-      maxLines: maxLines,
+      maxLines: maxLines??1000,
       style: textStyle,
       softWrap: true,
       overflow: TextOverflow.ellipsis,
@@ -198,8 +187,7 @@ class DrawableText extends StatelessWidget {
     Widget finalWidget = Padding(
       padding: padding ?? EdgeInsets.zero,
       child: SizedBox(
-        width:
-            (matchParent ?? false) ? MediaQuery.of(context).size.width : null,
+        width: (matchParent ?? false) ? MediaQuery.of(context).size.width : null,
         child: text.isHTML ? HtmlWidget(text) : child,
       ),
     );
